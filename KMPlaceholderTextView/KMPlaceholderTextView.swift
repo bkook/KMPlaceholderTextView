@@ -60,6 +60,12 @@ open class KMPlaceholderTextView: UITextView {
             placeholderLabel.font = font
         }
     }
+
+    open var placeholderInsets: UIEdgeInsets = .zero {
+        didSet {
+            updateConstraintsForPlaceholderLabel()
+        }
+    }
     
     override open var textAlignment: NSTextAlignment {
         didSet {
@@ -119,11 +125,11 @@ open class KMPlaceholderTextView: UITextView {
     }
     
     private func updateConstraintsForPlaceholderLabel() {
-        var newConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-(\(textContainerInset.left + textContainer.lineFragmentPadding))-[placeholder]",
+        var newConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|-(\(textContainerInset.left + textContainer.lineFragmentPadding + placeholderInsets.left))-[placeholder]",
             options: [],
             metrics: nil,
             views: ["placeholder": placeholderLabel])
-        newConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-(\(textContainerInset.top))-[placeholder]",
+        newConstraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-(\(textContainerInset.top + placeholderInsets.top))-[placeholder]",
             options: [],
             metrics: nil,
             views: ["placeholder": placeholderLabel])
@@ -134,7 +140,7 @@ open class KMPlaceholderTextView: UITextView {
             toItem: self,
             attribute: .width,
             multiplier: 1.0,
-            constant: -(textContainerInset.left + textContainerInset.right + textContainer.lineFragmentPadding * 2.0)
+            constant: -(textContainerInset.left + textContainerInset.right + placeholderInsets.right + textContainer.lineFragmentPadding * 2.0)
             ))
         removeConstraints(placeholderLabelConstraints)
         addConstraints(newConstraints)
